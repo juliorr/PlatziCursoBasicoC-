@@ -1,6 +1,6 @@
 # Challange #3
 Here will be all the code for the api of the practice # 3 of C# Basics of Platzi
-Most of the code was do on .NET core on Mac with Visual Studio Code
+most of the code was do on .NET core on Mac with Visual Studio Code
 
 The next doc was created by yoaman netcore 
 
