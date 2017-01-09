@@ -15,7 +15,7 @@ namespace Institucion
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddEntityFrameworkSqlite().AddDbContext<InstitucionDB>();
+            services.AddDbContext<InstitucionDB>();
         }
 
         public static void Main(string[] args)
@@ -26,7 +26,7 @@ namespace Institucion
             FileStream imagen = new FileStream("./Files/cool.bmp", FileMode.Open);
             BinaryReader binaryReader = new BinaryReader(imagen);
             byte[] buffer = new byte[16];
-        
+
             binaryReader.BaseStream.Position = 17;
             binaryReader.BaseStream.Read(buffer, 0, 16);
 
@@ -36,11 +36,11 @@ namespace Institucion
             byte[] anchoBytes = new byte[4] {buffer[0], buffer[1], buffer[2], buffer[3]};
             byte[] largoBytes = new byte[4] {buffer[4], buffer[5], buffer[6], buffer[7]};
             byte[] bitCountBytes = new byte[2] {buffer[10], buffer[11]};
-           
+
             int ancho = GetTheValuerray(anchoBytes);
             int largo = GetTheValuerray(largoBytes);
             int bitCount = GetTheValuerray(bitCountBytes);
-            
+
 
             System.Console.WriteLine($"Ancho: {ancho}, Largo: {largo}, bits per pixel: {GetBitsPerPixel(bitCount)} ");
         }
@@ -66,7 +66,7 @@ namespace Institucion
                 case 24:
                     bitPerPixel = "24 bit RGB";
                     break;
-                
+
             }
 
             return bitPerPixel;
@@ -78,7 +78,7 @@ namespace Institucion
             {
                 Array.Reverse(ArrayToCheck);
             }
-            
+
             return BitConverter.ToInt16(ArrayToCheck, 0);
         }
 
@@ -87,7 +87,7 @@ namespace Institucion
             FileStream fileProfesores = new FileStream("./Files/profesBinarios.bin", FileMode.Open);
             var binaryReader = new BinaryReader(fileProfesores);
             List<Profesor> listProfesores = new List<Profesor>();
-            
+
             while (binaryReader.BaseStream.Position < binaryReader.BaseStream.Length)
             {
                 listProfesores.Add(new Profesor() { Nombre = binaryReader.ReadString(), Id = binaryReader.ReadInt32() });
