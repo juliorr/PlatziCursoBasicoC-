@@ -2,6 +2,6 @@ namespace MultimediaApi.models
 {
     public class Image : Media
     {
-        public FormatImagen FormatImage { get; set; }
+        public FormatImagen Format { get; set; }
     }
 }
