@@ -1,6 +1,6 @@
 namespace MultimediaApi.models
 {
-    public class Size
+    public struct Size
     {
         public int With { get; set; }
         public int Height { get; set; }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MultimediaApi.DataAccess;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using MultimediaApi.models;
 
 namespace MultimediaApi.Controllers
 {
@@ -45,8 +46,13 @@ namespace MultimediaApi.Controllers
 
         // POST api/media
         [HttpPost]
-        public void Post([FromBody]string value)
+        public IEnumerable<string> Post([FromBody]Media newValue)
         {
+            var db = new ApiDB();
+            db.Database.EnsureCreated();  
+            db.Media.Add(newValue);
+            db.SaveChanges();
+            return new string[] {"Done"};
         }
 
         // PUT api/media/5
