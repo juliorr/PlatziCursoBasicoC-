@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using MultimediaApi.DataAccess;
 using System.Linq;
-using Microsoft.Extensions.DependencyInjection;
 using MultimediaApi.models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MultimediaApi.Controllers
 {
@@ -13,35 +14,28 @@ namespace MultimediaApi.Controllers
         
         // GET api/media
         [HttpGet]
-        public IEnumerable<string> Get()
+        public string Get()
         {
             var db = new ApiDB();
             db.Database.EnsureCreated();
             
             var result = from media in db.Media
                 select media;
-                
-            List<string> Answer = new List<string>();
-            
-            foreach (var item in result)
-            {
-                string Id = $"Id: {item.Id}";
-                string Name = $"Media: {item.Name}";
-                string Path = $"Path: {item.Path}";
-                string Size = "size: XXXX";
 
-                Answer.Append($"{Id}, {Name}, {Path}, {Size}");
-            }
-
-            return Answer;
-            // return new string[] { "Julio1", "Julio2" };
+            return JsonConvert.SerializeObject(result);    
         }
 
         // GET api/media/5
         [HttpGet("{id}")]
         public string Get(int id)
         {
-            return "value";
+            var db = new ApiDB();
+            db.Database.EnsureCreated();
+
+            var result = from media in db.Media
+                              where media.Id.Equals(id)
+                              select media;
+            return JsonConvert.SerializeObject(result);
         }
 
         // POST api/media
@@ -49,9 +43,10 @@ namespace MultimediaApi.Controllers
         public IEnumerable<string> Post([FromBody]Media newValue)
         {
             var db = new ApiDB();
-            db.Database.EnsureCreated();  
+            db.Database.EnsureCreated();
             db.Media.Add(newValue);
             db.SaveChanges();
+        
             return new string[] {"Done"};
         }
 
