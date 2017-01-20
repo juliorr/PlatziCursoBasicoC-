@@ -4,8 +4,6 @@ using MultimediaApi.DataAccess;
 using System.Linq;
 using MultimediaApi.models;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
 
 namespace MultimediaApi.Controllers
 {
