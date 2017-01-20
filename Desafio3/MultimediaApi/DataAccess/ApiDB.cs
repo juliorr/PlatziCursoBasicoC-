@@ -6,7 +6,7 @@ namespace MultimediaApi.DataAccess
     public class ApiDB: DbContext
     {
         public DbSet<Media> Media { get; set; }
-        public DbSet<Image> Imagens { get; set; }
+        public DbSet<Image> Image { get; set; }
         public DbSet<Video> Videos { get; set; } 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
