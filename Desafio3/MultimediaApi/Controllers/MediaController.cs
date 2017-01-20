@@ -5,21 +5,30 @@ using System.Linq;
 using MultimediaApi.models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
 
 namespace MultimediaApi.Controllers
 {
     [Route("api/[controller]")]
     public class MediaController : Controller
     {
-        
+        private ApiDB db;
+
+        private void InitDB()
+        {
+            if (this.db == null) { 
+                this.db = new ApiDB();
+                this.db.Database.EnsureCreated();
+            }
+        }
+
         // GET api/media
         [HttpGet]
         public string Get()
         {
-            var db = new ApiDB();
-            db.Database.EnsureCreated();
+            InitDB();
             
-            var result = from media in db.Media
+            var result = from media in this.db.Media
                 select media;
 
             return JsonConvert.SerializeObject(result);    
@@ -30,18 +39,21 @@ namespace MultimediaApi.Controllers
         public string Get(int id)
         {
             var result = GetMediaByID(id);
-
-            return JsonConvert.SerializeObject(result);
+            if (result.Count() > 0) {
+                return JsonConvert.SerializeObject(result);
+            } else {
+                string[] NoItem = new string[]  {"The id does not exist"};
+                return JsonConvert.SerializeObject(NoItem);
+            }
         }
 
         // POST api/media
         [HttpPost]
         public IEnumerable<string> Post([FromBody]Media newValue)
         {
-            var db = new ApiDB();
-            db.Database.EnsureCreated();
-            db.Media.Add(newValue);
-            db.SaveChanges();
+            InitDB();
+            this.db.Media.Add(newValue);
+            this.db.SaveChanges();
         
             return new string[] {"Done"};
         }
@@ -50,11 +62,14 @@ namespace MultimediaApi.Controllers
         [HttpPut("{id}")]
         public IEnumerable<string> Put(int id, [FromBody]Media newValue)
         {
+            InitDB();
+
             var result = GetMediaByID(id);
             if (result.Count() == 1) {
-                var db = new ApiDB();
-                db.Media.Update(newValue);
-                db.SaveChanges();
+                
+                newValue.Id = id;
+                this.db.Media.Update(newValue);
+                this.db.SaveChanges();
                 return new string[] {"Done"};
             } else {
                 return new string[] {"The id does not exist"};
@@ -65,12 +80,13 @@ namespace MultimediaApi.Controllers
         [HttpDelete("{id}")]
         public IEnumerable<string> Delete(int id)
         {
+            InitDB();
             var result = GetMediaByID(id);
             if (result.Count() == 1) {
                 Media MediaToDele = new Media(){Id = id};
-                var db = new ApiDB();
-                db.Media.Remove(MediaToDele);
-                db.SaveChanges();
+               
+                this.db.Media.Remove(MediaToDele);
+                this.db.SaveChanges();
                 return new string[] {"Done"};
             } else {
                 return new string[] {"The id does not exist"};
@@ -79,10 +95,10 @@ namespace MultimediaApi.Controllers
 
         private IQueryable<Media> GetMediaByID(int id)
         {
-            var db = new ApiDB();
-            db.Database.EnsureCreated();
+            InitDB();
+            this.db.Database.EnsureCreated();
             
-            var result = from media in db.Media
+            var result = from media in this.db.Media
                               where media.Id.Equals(id)
                               select media;
 
