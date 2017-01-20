@@ -29,12 +29,8 @@ namespace MultimediaApi.Controllers
         [HttpGet("{id}")]
         public string Get(int id)
         {
-            var db = new ApiDB();
-            db.Database.EnsureCreated();
+            var result = GetMediaByID(id);
 
-            var result = from media in db.Media
-                              where media.Id.Equals(id)
-                              select media;
             return JsonConvert.SerializeObject(result);
         }
 
@@ -52,14 +48,45 @@ namespace MultimediaApi.Controllers
 
         // PUT api/media/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        public IEnumerable<string> Put(int id, [FromBody]Media newValue)
         {
+            var result = GetMediaByID(id);
+            if (result.Count() == 1) {
+                var db = new ApiDB();
+                db.Media.Update(newValue);
+                db.SaveChanges();
+                return new string[] {"Done"};
+            } else {
+                return new string[] {"The id does not exist"};
+            }
         }
 
         // DELETE api/media/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IEnumerable<string> Delete(int id)
         {
+            var result = GetMediaByID(id);
+            if (result.Count() == 1) {
+                Media MediaToDele = new Media(){Id = id};
+                var db = new ApiDB();
+                db.Media.Remove(MediaToDele);
+                db.SaveChanges();
+                return new string[] {"Done"};
+            } else {
+                return new string[] {"The id does not exist"};
+            }
+        }
+
+        private IQueryable<Media> GetMediaByID(int id)
+        {
+            var db = new ApiDB();
+            db.Database.EnsureCreated();
+            
+            var result = from media in db.Media
+                              where media.Id.Equals(id)
+                              select media;
+
+            return result;
         }
     }
 }
