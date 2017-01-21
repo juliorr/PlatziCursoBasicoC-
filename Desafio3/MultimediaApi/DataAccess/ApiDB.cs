@@ -7,7 +7,7 @@ namespace MultimediaApi.DataAccess
     {
         public DbSet<Media> Media { get; set; }
         public DbSet<Image> Image { get; set; }
-        public DbSet<Video> Videos { get; set; } 
+        public DbSet<Video> Video { get; set; } 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
